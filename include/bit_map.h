@@ -16,10 +16,7 @@ bool bit_get(unsigned int bits, int index) {
 }
 
 void bit_set(unsigned int *bits, int index, bool value) {
-  if (value)
-    *bits = *bits | (1 << index);
-  else
-    *bits = *bits & ~(1 << index);
+  *bits = value ? *bits | (1 << index) : *bits & ~(1 << index);
 }
 
 int bit_count(unsigned int bits) {
