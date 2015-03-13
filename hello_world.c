@@ -78,7 +78,16 @@ int main() {
   amt_init(&trie);
 
   amt_insert(&trie, "a", 2);
+  assert(amt_contains(&trie, "a", 2));
+
   amt_insert(&trie, "ag", 3);
+  assert(amt_contains(&trie, "ag", 3));
+
+  amt_insert(&trie, "ab", 3);
+  assert(amt_contains(&trie, "ab", 3));
+
+  amt_insert(&trie, "ad", 3);
+  assert(amt_contains(&trie, "ad", 3));
   //amt_insert(&trie, "hello", 6);
 
   return 0;

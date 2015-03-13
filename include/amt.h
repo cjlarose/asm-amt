@@ -47,7 +47,7 @@ void amt_init(BitMappedNode *trie) {
 }
 
 void amt_insert(BitMappedNode *root, const void *value, size_t len) {
-  int i = 0;
+  int i;
   BitMappedNode **trie = &root->node->sub_trie;
   uint16_t *node_count = &root->node->node_count;
   unsigned char *c = (unsigned char *) value;
@@ -75,6 +75,22 @@ void amt_insert(BitMappedNode *root, const void *value, size_t len) {
     trie = &new_node->sub_trie;
     node_count = &new_node->node_count;
   }
+}
+
+bool amt_contains(BitMappedNode *root, const void *value, size_t len) {
+  int i;
+  BitMappedNode **trie = &root->node->sub_trie;
+  unsigned char *c = (unsigned char *) value;
+
+  for (i = 0; i < len; ++i, ++c) {
+    if (!*trie || !bitmap_get(&(*trie)->map, *c))
+      return false;
+
+    int index = bitmap_get_offset(&(*trie)->map, *c);
+    AMTNode *node = &(*trie)->node[index];
+    trie = &node->sub_trie;
+  }
+  return true;
 }
 
 #endif
