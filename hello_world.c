@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "bit_map.h"
+#include "amt.h"
 
 int main() {
   int i;
@@ -70,6 +71,13 @@ int main() {
   assert(bitmap_get(&map, 111));
   assert(bitmap_get(&map, 176));
   assert(bitmap_get(&map, 255));
+
+  printf("Testing amt\n");
+  BitMappedNode trie;
+  amt_init(&trie);
+
+  const char *hello = "hello";
+  amt_insert(&trie, hello, 6);
 
   return 0;
 }
