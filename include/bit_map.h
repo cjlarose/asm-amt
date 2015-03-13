@@ -44,11 +44,13 @@ void bitmap_init(Bitmap *map) {
 }
 
 bool bitmap_get(Bitmap *map, int index) {
+  assert(index > -1 && index < 256);
   BitmapEntry *entry = &map->entries[index / 32]; // hopefully this compiles to a shift
   return bit_get(entry->bits, 32 - index % 32); // hopefuly this compiles to a mask
 }
 
 void bitmap_set(Bitmap *map, int index, bool value) {
+  assert(index > -1 && index < 256);
   int i = index / 32;
 
   // update bits
@@ -63,6 +65,7 @@ void bitmap_set(Bitmap *map, int index, bool value) {
 }
 
 int bitmap_get_offset(Bitmap *map, int index) {
+  assert(index > -1 && index < 256);
   int i = index / 32;
   return (&map->entries[i])->offset + bit_count((&map->entries[i])->bits >> (33 - index % 32));
 }
