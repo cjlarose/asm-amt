@@ -47,5 +47,28 @@ int main() {
 
   assert(bitmap_get_offset(map, 218) == 0);
 
+  // add lots of values!
+  map = bitmap_create();
+  bitmap_print(map);
+  bitmap_set(map, 0, true);
+  bitmap_print(map);
+  bitmap_set(map, 18, true);
+  bitmap_print(map);
+  bitmap_set(map, 43, true);
+  bitmap_print(map);
+  bitmap_set(map, 111, true);
+  bitmap_print(map);
+  bitmap_set(map, 176, true);
+  bitmap_print(map);
+  bitmap_set(map, 255, true);
+  bitmap_print(map);
+
+  assert(bitmap_get(map, 0));
+  assert(bitmap_get(map, 18));
+  assert(bitmap_get(map, 43));
+  assert(bitmap_get(map, 111));
+  assert(bitmap_get(map, 176));
+  assert(bitmap_get(map, 255));
+
   return 0;
 }

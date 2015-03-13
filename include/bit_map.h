@@ -1,11 +1,12 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #define BITSET_ENTRIES 8
 
 typedef struct BitmapEntry {
-  unsigned int bits;
+  uint32_t bits;
   int offset;
 } BitmapEntry;
 
@@ -14,15 +15,15 @@ typedef BitmapEntry* Bitmap;
 /******************************************************************************
  * Bit twiddling utils
  *****************************************************************************/
-bool bit_get(unsigned int bits, int index) {
+bool bit_get(uint32_t bits, int index) {
   return (bits >> index) & 1;
 }
 
-void bit_set(unsigned int *bits, int index, bool value) {
+void bit_set(uint32_t *bits, int index, bool value) {
   *bits = value ? *bits | (1 << (32 - index)) : *bits & ~(1 << (32 - index));
 }
 
-int bit_count(unsigned int bits) {
+int bit_count(uint32_t bits) {
   int count;
   for (count = 0; bits; bits >>= 1)
     count += bits & 1;
@@ -34,7 +35,7 @@ int bit_count(unsigned int bits) {
  *****************************************************************************/
 Bitmap bitmap_create() {
   // create a bitmap of size 256 bits
-  BitmapEntry *map = calloc(BITSET_ENTRIES, sizeof(BitmapEntry));
+  BitmapEntry *map = (BitmapEntry *) calloc(BITSET_ENTRIES, sizeof(BitmapEntry));
   return map;
 }
 
@@ -58,7 +59,6 @@ void bitmap_set(Bitmap map, int index, bool value) {
 }
 
 int bitmap_get_offset(Bitmap map, int index) {
-  //printf("bitmap_get_offset(%d)\n", index);
   int i = index / 32;
   return (&map[i])->offset + bit_count((&map[i])->bits >> (33 - index % 32));
 }
@@ -77,10 +77,11 @@ void bitmap_print(Bitmap map) {
       bits[offset] = bitmap_get(map, i * 32 + j) ? '1' : '0';
     }
 
-    printf("%d | 0x%04x : %s | %d\n",
+    printf("%d | 0x%08x : %s | %d\n",
            i,
            (&map[i])->bits,
            bits,
            (&map[i])->offset);
   }
+  printf("\n");
 }
