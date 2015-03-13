@@ -1,6 +1,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define BITSET_ENTRIES 8
+
 typedef struct BitmapEntry {
   unsigned int bits;
   int offset;
@@ -16,7 +18,7 @@ bool bit_get(unsigned int bits, int index) {
 }
 
 void bit_set(unsigned int *bits, int index, bool value) {
-  *bits = value ? *bits | (1 << index) : *bits & ~(1 << index);
+  *bits = value ? *bits | (1 << (32 - index)) : *bits & ~(1 << (32 - index));
 }
 
 int bit_count(unsigned int bits) {
@@ -31,27 +33,30 @@ int bit_count(unsigned int bits) {
  *****************************************************************************/
 Bitmap bitmap_create() {
   // create a bitmap of size 256 bits
-  BitmapEntry *map = calloc(8, sizeof(BitmapEntry));
+  BitmapEntry *map = calloc(BITSET_ENTRIES, sizeof(BitmapEntry));
   return map;
 }
 
 bool bitmap_get(Bitmap map, int index) {
-  BitmapEntry *entry = &map[index >> 3]; // hopefully this compiles to a shift
-  return bit_get(entry->bits, index % 8); // hopefuly this compiles to a mask
+  BitmapEntry *entry = &map[index / 32]; // hopefully this compiles to a shift
+  return bit_get(entry->bits, 32 - index % 32); // hopefuly this compiles to a mask
 }
 
 void bitmap_set(Bitmap map, int index, bool value) {
-  BitmapEntry *entry = &map[index >> 3];
-  bit_set(&entry->bits, index % 8, value);
+  int i = index / 32;
+
+  // update bits
+  BitmapEntry *entry = &map[i];
+  bit_set(&entry->bits, index % 32, value);
+
+  // update memoized offsets
+  for (++i; i < BITSET_ENTRIES; ++i) {
+    entry = &map[i];
+    entry->offset++;
+  }
 }
 
 int bitmap_get_offset(Bitmap map, int index) {
-  int i, sum = 0;
-  BitmapEntry *entry;
-  for (i = 0; i < index >> 3; ++i) {
-    entry = &map[i >> 3];
-    sum += entry->offset;
-  }
-  sum += bit_count(entry->bits >> (index + 1));
-  return sum;
+  int i = index / 32;
+  return (&map[i])->offset + bit_count((&map[i])->bits >> (33 - index % 32));
 }

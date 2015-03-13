@@ -21,15 +21,27 @@ int main() {
     assert(!bitmap_get(map, i));
 
   // set and check
-  bitmap_set(map, 240, true);
+  bitmap_set(map, 217, true);
 
-  for (i = 0; i < 256; ++i)
-    assert(bitmap_get(map, i) == (i == 240));
+  for (i = 0; i < 256; ++i) {
+    //printf("i: %d\n", i);
+    assert(bitmap_get(map, i) == (i == 217));
+  }
+
+  // check offset
+  assert(bitmap_get_offset(map, 0) == 0);
+  assert(bitmap_get_offset(map, 217) == 0);
+  assert(bitmap_get_offset(map, 218) == 1);
+  assert(bitmap_get_offset(map, 219) == 1);
+  assert(bitmap_get_offset(map, 253) == 1);
+  assert(bitmap_get_offset(map, 255) == 1);
 
   // unset and check
-  bitmap_set(map, 240, false);
+  bitmap_set(map, 217, false);
   for (i = 0; i < 256; ++i)
     assert(!bitmap_get(map, i));
+
+  assert(bitmap_get_offset(map, 218) == 0);
 
   return 0;
 }
