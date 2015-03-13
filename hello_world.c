@@ -14,7 +14,7 @@ int main() {
   assert(bit_count(16) == 1);
 
   printf("Testing bitmap get & set\n");
-  Bitmap map = bitmap_create();
+  Bitmap *map = bitmap_create();
 
   // test that everything is initialized to 0
   for (i = 0; i < 256; ++i)
