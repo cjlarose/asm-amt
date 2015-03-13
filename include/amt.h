@@ -27,13 +27,16 @@ void amtnode_init(AMTNode *node, uint16_t count, uint16_t character) {
 void amtnodelist_insert(AMTNode **node, uint16_t *len, int index, char c) {
   // resize node list to accommodate one more entry
   printf("index: %d\n", index);
-  printf("oldlen: %d\n", *len);
+  printf("oldlen: %u\n", *len);
   (*len)++;
-  printf("newlen: %d\n", *len);
+  printf("newlen: %u\n", *len);
+
+  printf("*node before: %p\n", *node);
   *node = (AMTNode *) realloc(*node, *len * sizeof(AMTNode));
-  printf("*node: %p\n", *node);
+  printf("*node after: %p\n", *node);
 
   // move nodes [index..*len) down one slot
+  printf("sizeof(AMTNode): %zu\n", sizeof(AMTNode));
   size_t sz = sizeof(AMTNode) * (*len - index - 1);
   printf("size: %zu\n", sz);
   printf("dest: %p\n", &(*node[index]) + sizeof(AMTNode));
@@ -51,8 +54,8 @@ void amt_init(BitMappedNode *trie) {
 }
 
 void amt_insert(BitMappedNode *root, const void *value, size_t len) {
-  unsigned char c = *(char *) value;
-  printf("char: %u %c\n", c, c);
+  printf("\n\nINSERT\n");
+  int i = 0;
 
   BitMappedNode *trie = root->node->sub_trie;
   if (!trie) {
@@ -66,13 +69,21 @@ void amt_insert(BitMappedNode *root, const void *value, size_t len) {
 
   bitmap_print(&trie->map);
 
-  // set the character in the bitmap
-  bitmap_set(&trie->map, c, true);
-  assert(bitmap_get(&trie->map, c));
+  unsigned char *c = (unsigned char *) value;
 
-  // actually add the node
-  int index = bitmap_get_offset(&trie->map, c);
-  amtnodelist_insert(&trie->node, &root->node->node_count, index, c);
+  for (i = 0; i < len; ++i, ++c) {
+    printf("char: %u %c\n", *c, *c);
+
+    // set the character in the bitmap
+    bitmap_set(&trie->map, *c, true);
+    bitmap_print(&trie->map);
+    assert(bitmap_get(&trie->map, *c));
+
+    // actually add the node
+    int index = bitmap_get_offset(&trie->map, *c);
+    printf("index: %d\n", index);
+    amtnodelist_insert(&trie->node, &root->node->node_count, index, *c);
+  }
 }
 
 #endif

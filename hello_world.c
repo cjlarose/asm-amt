@@ -34,6 +34,7 @@ int main() {
 
   // check offset
   assert(bitmap_get_offset(&map, 0) == 0);
+  //printf("bitmap_get_offset(217): %d\n", bitmap_get_offset(&map, 217));
   assert(bitmap_get_offset(&map, 217) == 0);
   assert(bitmap_get_offset(&map, 218) == 1);
   assert(bitmap_get_offset(&map, 219) == 1);
@@ -76,8 +77,9 @@ int main() {
   BitMappedNode trie;
   amt_init(&trie);
 
-  const char *hello = "hello";
-  amt_insert(&trie, hello, 6);
+  amt_insert(&trie, "a", 2);
+  //amt_insert(&trie, "ag", 3);
+  //amt_insert(&trie, "hello", 6);
 
   return 0;
 }

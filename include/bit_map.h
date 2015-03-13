@@ -22,11 +22,12 @@ typedef struct Bitmap {
  * Bit twiddling utils
  *****************************************************************************/
 bool bit_get(uint32_t bits, int index) {
-  return (bits >> index) & 1;
+  //return (bits >> index) & 1;
+  return bits & (1 << index);
 }
 
 void bit_set(uint32_t *bits, int index, bool value) {
-  *bits = value ? *bits | (1 << (32 - index)) : *bits & ~(1 << (32 - index));
+  *bits = value ? *bits | (1 << index) : *bits & ~(1 << index);
 }
 
 int bit_count(uint32_t bits) {
@@ -46,7 +47,7 @@ void bitmap_init(Bitmap *map) {
 bool bitmap_get(Bitmap *map, int index) {
   assert(index > -1 && index < 256);
   BitmapEntry *entry = &map->entries[index / 32]; // hopefully this compiles to a shift
-  return bit_get(entry->bits, 32 - index % 32); // hopefuly this compiles to a mask
+  return bit_get(entry->bits, index % 32); // hopefuly this compiles to a mask
 }
 
 void bitmap_set(Bitmap *map, int index, bool value) {
@@ -67,7 +68,21 @@ void bitmap_set(Bitmap *map, int index, bool value) {
 int bitmap_get_offset(Bitmap *map, int index) {
   assert(index > -1 && index < 256);
   int i = index / 32;
-  return (&map->entries[i])->offset + bit_count((&map->entries[i])->bits >> (33 - index % 32));
+  BitmapEntry *entry = &map->entries[i];
+
+  int shift_amount = 32 - index % 32;
+  printf("index %% 32: %d\n", index % 32);
+  printf("bits: %u\n", entry->bits);
+  printf("shift_amount: %d\n", shift_amount);
+
+  printf("bitmap_get_offset(%d)\n", index);
+  printf("(&map->entries[i])->offset: %d\n", entry->offset);
+
+  //printf("32 - index %% 32: %d\n", 32 - (index % 32));
+  printf("bit_count: %d\n", bit_count(entry->bits));
+  //printf("bit_count: %d\n", bit_count(entry->bits >> (33 - (index % 32))));
+  return entry->offset + bit_count(entry->bits << shift_amount);
+  //return entry->offset + bit_count(entry->bits & (0xFFFFFFFF << (32 - index % 32)));
 }
 
 void bitmap_print(Bitmap* map) {
