@@ -78,7 +78,7 @@ int main() {
   amt_init(&trie);
 
   amt_insert(&trie, "a", 2);
-  //amt_insert(&trie, "ag", 3);
+  amt_insert(&trie, "ag", 3);
   //amt_insert(&trie, "hello", 6);
 
   return 0;
