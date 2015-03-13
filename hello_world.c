@@ -23,6 +23,8 @@ int main() {
   // set and check
   bitmap_set(map, 217, true);
 
+  bitmap_print(map);
+
   for (i = 0; i < 256; ++i) {
     //printf("i: %d\n", i);
     assert(bitmap_get(map, i) == (i == 217));

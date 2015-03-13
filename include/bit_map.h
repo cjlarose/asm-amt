@@ -57,6 +57,20 @@ void bitmap_set(Bitmap map, int index, bool value) {
 }
 
 int bitmap_get_offset(Bitmap map, int index) {
+  printf("bitmap_get_offset(%d)\n", index);
   int i = index / 32;
   return (&map[i])->offset + bit_count((&map[i])->bits >> (33 - index % 32));
+}
+
+void bitmap_print(Bitmap map) {
+  int i, j;
+  char bits[33];
+  bits[32] = '\0';
+
+  for (i = 0; i < BITSET_ENTRIES; ++i) {
+    for (j = 0; j < 32; ++j)
+      bits[j] = bitmap_get(map, i * 32 + j) ? '1' : '0';
+
+    printf("%d | %s | %d\n", i, bits, (&map[i])->bits);
+  }
 }
