@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define BITSET_ENTRIES 8
 
@@ -63,14 +64,23 @@ int bitmap_get_offset(Bitmap map, int index) {
 }
 
 void bitmap_print(Bitmap map) {
-  int i, j;
-  char bits[33];
-  bits[32] = '\0';
+  int i, j, offset;
+  char bits[40];
+  memset(bits, ' ', 39);
+  bits[39] = '\0';
 
+  printf("i | bits                                             | offset\n");
+  printf("-------------------------------------------------------------\n");
   for (i = 0; i < BITSET_ENTRIES; ++i) {
-    for (j = 0; j < 32; ++j)
-      bits[j] = bitmap_get(map, i * 32 + j) ? '1' : '0';
+    for (j = 0; j < 32; ++j) {
+      offset = j / 4 + j;
+      bits[offset] = bitmap_get(map, i * 32 + j) ? '1' : '0';
+    }
 
-    printf("%d | %s | %d\n", i, bits, (&map[i])->bits);
+    printf("%d | 0x%04x : %s | %d\n",
+           i,
+           (&map[i])->bits,
+           bits,
+           (&map[i])->offset);
   }
 }
