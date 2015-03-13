@@ -53,12 +53,12 @@ void bitmap_set(Bitmap map, int index, bool value) {
   // update memoized offsets
   for (++i; i < BITSET_ENTRIES; ++i) {
     entry = &map[i];
-    entry->offset++;
+    value ? entry->offset++ : entry->offset--;
   }
 }
 
 int bitmap_get_offset(Bitmap map, int index) {
-  printf("bitmap_get_offset(%d)\n", index);
+  //printf("bitmap_get_offset(%d)\n", index);
   int i = index / 32;
   return (&map[i])->offset + bit_count((&map[i])->bits >> (33 - index % 32));
 }

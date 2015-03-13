@@ -43,6 +43,8 @@ int main() {
   for (i = 0; i < 256; ++i)
     assert(!bitmap_get(map, i));
 
+  bitmap_print(map);
+
   assert(bitmap_get_offset(map, 218) == 0);
 
   return 0;
