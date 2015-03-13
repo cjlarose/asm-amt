@@ -39,12 +39,6 @@ int bit_count(uint32_t bits) {
 /******************************************************************************
  * Bitmap functions
  *****************************************************************************/
-Bitmap *bitmap_create() {
-  // create a bitmap of size 256 bits
-  Bitmap *map = (Bitmap *) calloc(1, sizeof(Bitmap));
-  return map;
-}
-
 void bitmap_init(Bitmap *map) {
   memset(map, 0, sizeof(Bitmap));
 }
