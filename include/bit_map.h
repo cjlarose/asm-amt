@@ -70,19 +70,10 @@ int bitmap_get_offset(Bitmap *map, int index) {
   int i = index / 32;
   BitmapEntry *entry = &map->entries[i];
 
-  int shift_amount = 32 - index % 32;
-  printf("index %% 32: %d\n", index % 32);
-  printf("bits: %u\n", entry->bits);
-  printf("shift_amount: %d\n", shift_amount);
-
-  printf("bitmap_get_offset(%d)\n", index);
-  printf("(&map->entries[i])->offset: %d\n", entry->offset);
-
-  //printf("32 - index %% 32: %d\n", 32 - (index % 32));
-  printf("bit_count: %d\n", bit_count(entry->bits));
-  //printf("bit_count: %d\n", bit_count(entry->bits >> (33 - (index % 32))));
+  if (index % 32 == 0) // avoid undefined behavior
+    return 0;
+  uint32_t shift_amount = 32 - index % 32;
   return entry->offset + bit_count(entry->bits << shift_amount);
-  //return entry->offset + bit_count(entry->bits & (0xFFFFFFFF << (32 - index % 32)));
 }
 
 void bitmap_print(Bitmap* map) {
