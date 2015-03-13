@@ -5,7 +5,15 @@
 int main() {
   int i;
 
-  printf("Testing bitmap\n");
+  printf("Testing bitcount\n");
+
+  assert(bit_count(0) == 0);
+  assert(bit_count(1) == 1);
+  assert(bit_count(8) == 1);
+  assert(bit_count(15) == 4);
+  assert(bit_count(16) == 1);
+
+  printf("Testing bitmap get & set\n");
   Bitmap map = bitmap_create();
 
   // test that everything is initialized to 0
@@ -16,8 +24,7 @@ int main() {
   bitmap_set(map, 240, true);
 
   for (i = 0; i < 256; ++i)
-    if (i != 240)
-      assert(!bitmap_get(map, i));
+    assert(bitmap_get(map, i) == (i == 240));
 
   // unset and check
   bitmap_set(map, 240, false);
