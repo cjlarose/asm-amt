@@ -2,6 +2,7 @@
 #define BIT_MAP_H
 
 #include <stdint.h>
+#include <cassert>
 #include <iostream>
 
 #define BITSET_ENTRIES 8
