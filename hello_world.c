@@ -16,79 +16,75 @@ int main() {
 
   printf("Testing bitmap get & set\n");
   Bitmap map;
-  bitmap_init(&map);
 
   // test that everything is initialized to 0
   for (i = 0; i < 256; ++i)
-    assert(!bitmap_get(&map, i));
+    assert(!map.get(i));
 
   // set and check
-  bitmap_set(&map, 217, true);
+  map.set(217, true);
 
-  bitmap_print(&map);
+  std::cout << map;
 
   for (i = 0; i < 256; ++i) {
     //printf("i: %d\n", i);
-    assert(bitmap_get(&map, i) == (i == 217));
+    assert(map.get(i) == (i == 217));
   }
 
   // check offset
-  assert(bitmap_get_offset(&map, 0) == 0);
-  //printf("bitmap_get_offset(217): %d\n", bitmap_get_offset(&map, 217));
-  assert(bitmap_get_offset(&map, 217) == 0);
-  assert(bitmap_get_offset(&map, 218) == 1);
-  assert(bitmap_get_offset(&map, 219) == 1);
-  assert(bitmap_get_offset(&map, 253) == 1);
-  assert(bitmap_get_offset(&map, 255) == 1);
+  assert(map.get_offset(0) == 0);
+  //printf("bitmap_get_offset(217): %d\n", map.get_offset(217));
+  assert(map.get_offset(217) == 0);
+  assert(map.get_offset(218) == 1);
+  assert(map.get_offset(219) == 1);
+  assert(map.get_offset(253) == 1);
+  assert(map.get_offset(255) == 1);
 
   // unset and check
-  bitmap_set(&map, 217, false);
+  map.set(217, false);
   for (i = 0; i < 256; ++i)
-    assert(!bitmap_get(&map, i));
+    assert(!map.get(i));
 
-  bitmap_print(&map);
+  std::cout << map;
 
-  assert(bitmap_get_offset(&map, 218) == 0);
+  assert(map.get_offset(218) == 0);
 
   // add lots of values!
-  bitmap_init(&map);
-  bitmap_print(&map);
-  bitmap_set(&map, 0, true);
-  bitmap_print(&map);
-  bitmap_set(&map, 18, true);
-  bitmap_print(&map);
-  bitmap_set(&map, 43, true);
-  bitmap_print(&map);
-  bitmap_set(&map, 111, true);
-  bitmap_print(&map);
-  bitmap_set(&map, 176, true);
-  bitmap_print(&map);
-  bitmap_set(&map, 255, true);
-  bitmap_print(&map);
+  std::cout << map;
+  map.set(0, true);
+  std::cout << map;
+  map.set(18, true);
+  std::cout << map;
+  map.set(43, true);
+  std::cout << map;
+  map.set(111, true);
+  std::cout << map;
+  map.set(176, true);
+  std::cout << map;
+  map.set(255, true);
+  std::cout << map;
 
-  assert(bitmap_get(&map, 0));
-  assert(bitmap_get(&map, 18));
-  assert(bitmap_get(&map, 43));
-  assert(bitmap_get(&map, 111));
-  assert(bitmap_get(&map, 176));
-  assert(bitmap_get(&map, 255));
+  assert(map.get(0));
+  assert(map.get(18));
+  assert(map.get(43));
+  assert(map.get(111));
+  assert(map.get(176));
+  assert(map.get(255));
 
   printf("Testing amt\n");
   BitMappedNode trie;
-  amt_init(&trie);
 
-  amt_insert(&trie, "a", 2);
-  assert(amt_contains(&trie, "a", 2));
+  trie.insert("a", 2);
+  assert(trie.contains("a", 2));
 
-  amt_insert(&trie, "ag", 3);
-  assert(amt_contains(&trie, "ag", 3));
+  trie.insert("ag", 3);
+  assert(trie.contains("ag", 3));
 
-  amt_insert(&trie, "ab", 3);
-  assert(amt_contains(&trie, "ab", 3));
+  trie.insert("ab", 3);
+  trie.contains("ab", 3);
 
-  amt_insert(&trie, "ad", 3);
-  assert(amt_contains(&trie, "ad", 3));
-  //amt_insert(&trie, "hello", 6);
+  trie.insert("ad", 3);
+  trie.contains("ad", 3);
 
   return 0;
 }
