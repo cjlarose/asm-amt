@@ -18,8 +18,8 @@ bool bit_get(uint32_t bits, int index) {
   return bits & (1 << index);
 }
 
-void bit_set(uint32_t *bits, int index, bool value) {
-  *bits = value ? *bits | (1 << index) : *bits & ~(1 << index);
+uint32_t bit_set(uint32_t bits, int index, bool value) {
+  return value ? bits | (1 << index) : bits & ~(1 << index);
 }
 
 int bit_count(uint32_t bits) {
@@ -55,7 +55,7 @@ void Bitmap::set(int index, bool value) {
 
   // update bits
   BitmapEntry entry = entries[i];
-  bit_set(&entry.bits, index % 32, value);
+  entry.bits = bit_set(entry.bits, index % 32, value);
 
   // update memoized offsets
   for (++i; i < BITSET_ENTRIES; ++i) {
