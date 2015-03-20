@@ -2,7 +2,7 @@
 #define AMT_H
  
 #include <vector>
-#include "bit_map.h"
+#include "bit_map.hpp"
 
 class AMTNode;
 

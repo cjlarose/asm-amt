@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
-#include "bit_map.h"
-#include "amt.h"
+#include "bit_map.hpp"
+#include "amt.hpp"
 
 int main() {
   int i;
