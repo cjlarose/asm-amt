@@ -36,7 +36,7 @@ class Bitmap {
   struct BitmapEntry entries[BITSET_ENTRIES];
 
   public:
-    Bitmap() : entries{0} {}
+    Bitmap() : entries{{0}} {}
     bool get(int) const;
     void set(int, bool);
     int get_offset(int);
@@ -78,7 +78,7 @@ int Bitmap::get_offset(int index) {
 std::ostream& operator<<(std::ostream& os, const Bitmap& bm) {
   int i, j, offset;
   char bits[40];
-  memset(bits, ' ', 39);
+  std::fill(bits, bits + 39, ' ');
   bits[39] = '\0';
 
   os << "i | bits                                             | offset\n";
