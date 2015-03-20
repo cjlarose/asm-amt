@@ -54,13 +54,13 @@ void Bitmap::set(int index, bool value) {
   int i = index / 32;
 
   // update bits
-  BitmapEntry entry = entries[i];
-  entry.bits = bit_set(entry.bits, index % 32, value);
+  BitmapEntry *entry = &entries[i];
+  entry->bits = bit_set(entry->bits, index % 32, value);
 
   // update memoized offsets
   for (++i; i < BITSET_ENTRIES; ++i) {
-    entry = entries[i];
-    value ? entry.offset++ : entry.offset--;
+    entry = &entries[i];
+    value ? entry->offset++ : entry->offset--;
   }
 }
 
