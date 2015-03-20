@@ -1,0 +1,5 @@
+interface BitMappedNode {
+  void BitMappedNode();
+  void insert(VoidPtr value, unsigned long len);
+  boolean contains(VoidPtr value, unsigned long len);
+};
