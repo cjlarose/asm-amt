@@ -7,6 +7,8 @@
 class AMTNode;
 
 class BitMappedNode {
+  friend class AMTNode;
+
   Bitmap map;
   std::vector<AMTNode> nodes;
 
@@ -14,9 +16,6 @@ class BitMappedNode {
     BitMappedNode();
     void insert(const void *value, size_t len);
     bool contains(const void *value, size_t len);
-
-  private:
-    BitMappedNode *next(char c);
 };
 
 class AMTNode {
@@ -24,27 +23,28 @@ class AMTNode {
     uint16_t character;
     BitMappedNode *sub_trie;
     AMTNode(): character('\0'), sub_trie(NULL) {}
+    AMTNode *next(char c);
 };
 
 BitMappedNode::BitMappedNode() {
   nodes.push_back(AMTNode());
 }
 
-BitMappedNode *BitMappedNode::next(char c) {
-  if (!map.get(c)) return NULL;
-  int index = map.get_offset(c);
-  AMTNode *node = &nodes[index];
-  return node->sub_trie;
+AMTNode *AMTNode::next(char c) {
+  if (!sub_trie || !sub_trie->map.get(c)) return NULL;
+  int index = sub_trie->map.get_offset(c);
+  AMTNode *node = &sub_trie->nodes[index];
+  return node;
 }
 
 bool BitMappedNode::contains(const void *value, size_t len) {
   int i;
-  BitMappedNode *trie = nodes[0].sub_trie;
+  AMTNode *node = &nodes[0];
   unsigned char *c = (unsigned char *) value;
 
   for (i = 0; i < len; ++i, ++c) {
-    if (!trie) return false;
-    trie = trie->next(*c);
+    if (!node) return false;
+    node = node->next(*c);
   }
   return true;
 }
