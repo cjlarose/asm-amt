@@ -22,12 +22,12 @@ class AMTNode {
   public:
     uint16_t character;
     BitMappedNode *sub_trie;
-    AMTNode(): character('\0'), sub_trie(NULL) {}
+    AMTNode(char c): character(c), sub_trie(NULL) {}
     AMTNode *next(char c);
 };
 
 BitMappedNode::BitMappedNode() {
-  nodes.push_back(AMTNode());
+  nodes.push_back(AMTNode('\0'));
 }
 
 AMTNode *AMTNode::next(char c) {
@@ -67,11 +67,8 @@ void BitMappedNode::insert(const void *value, size_t len) {
     node->sub_trie->map.set(*c, true);
 
     int index = node->sub_trie->map.get_offset(*c);
-    AMTNode new_node = AMTNode();
-    new_node.character = *c;
-
     std::vector<AMTNode> *node_list = &node->sub_trie->nodes;
-    node_list->emplace(node_list->begin() + index, new_node);
+    node_list->emplace(node_list->begin() + index, AMTNode(*c));
 
     node = &node_list->at(index);
   }
