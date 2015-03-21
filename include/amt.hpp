@@ -14,6 +14,9 @@ class BitMappedNode {
     BitMappedNode();
     void insert(const void *value, size_t len);
     bool contains(const void *value, size_t len);
+
+  private:
+    BitMappedNode *next(char c);
 };
 
 class AMTNode {
@@ -25,6 +28,25 @@ class AMTNode {
 
 BitMappedNode::BitMappedNode() {
   nodes.push_back(AMTNode());
+}
+
+BitMappedNode *BitMappedNode::next(char c) {
+  if (!map.get(c)) return NULL;
+  int index = map.get_offset(c);
+  AMTNode *node = &nodes[index];
+  return node->sub_trie;
+}
+
+bool BitMappedNode::contains(const void *value, size_t len) {
+  int i;
+  BitMappedNode *trie = nodes[0].sub_trie;
+  unsigned char *c = (unsigned char *) value;
+
+  for (i = 0; i < len; ++i, ++c) {
+    if (!trie) return false;
+    trie = trie->next(*c);
+  }
+  return true;
 }
 
 void BitMappedNode::insert(const void *value, size_t len) {
@@ -52,22 +74,6 @@ void BitMappedNode::insert(const void *value, size_t len) {
     AMTNode *new_node = &(*trie)->nodes[index];
     trie = &new_node->sub_trie;
   }
-}
-
-bool BitMappedNode::contains(const void *value, size_t len) {
-  int i;
-  BitMappedNode **trie = &nodes[0].sub_trie;
-  unsigned char *c = (unsigned char *) value;
-
-  for (i = 0; i < len; ++i, ++c) {
-    if (!*trie || !(*trie)->map.get(*c))
-      return false;
-
-    int index = (*trie)->map.get_offset(*c);
-    AMTNode *node = &(*trie)->nodes[index];
-    trie = &node->sub_trie;
-  }
-  return true;
 }
 
 #endif
