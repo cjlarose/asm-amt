@@ -15,7 +15,7 @@ class ArrayMappedTrie {
   std::vector<AMTNode> nodes;
 
   public:
-    ArrayMappedTrie();
+    ArrayMappedTrie(): map(NULL) {};
     void insert(const void *value, size_t len);
     bool contains(const void *value, size_t len);
 
@@ -30,10 +30,6 @@ class AMTNode {
     AMTNode(char c): character(c), sub_trie(NULL) {}
     AMTNode *next(char c);
 };
-
-ArrayMappedTrie::ArrayMappedTrie(): map(NULL) {
-  nodes.push_back(AMTNode('\0'));
-}
 
 AMTNode *AMTNode::next(char c) {
   if (!sub_trie) return NULL;
@@ -54,6 +50,8 @@ AMTNode *AMTNode::next(char c) {
 }
 
 bool ArrayMappedTrie::contains(const void *value, size_t len) {
+  if (!nodes.size()) return false;
+
   int i;
   AMTNode *node = &nodes[0];
   unsigned char *c = (unsigned char *) value;
@@ -68,6 +66,10 @@ bool ArrayMappedTrie::contains(const void *value, size_t len) {
 void ArrayMappedTrie::insert(const void *value, size_t len) {
   int i;
   unsigned char *c = (unsigned char *) value;
+
+  if (!nodes.size())
+    nodes.push_back(AMTNode('\0'));
+
   AMTNode *node = &nodes[0];
 
   for (i = 0; i < len; ++i, ++c) {
@@ -88,8 +90,14 @@ void ArrayMappedTrie::insert(const void *value, size_t len) {
       trie->map->set(*c, true);
       index = trie->map->get_offset(*c);
     } else {
-      AMTNode *tmp_node = &node_list->at(0);
-      for (index = 0; index < node_list->size() && tmp_node->character < *c; ++index, ++tmp_node);
+      index = 0;
+      if (!node_list->empty()) {
+        AMTNode *tmp_node = &node_list->at(0);
+        while (index < node_list->size() && tmp_node->character < *c) {
+          ++index;
+          ++tmp_node;
+        }
+      }
     }
 
     node_list->emplace(node_list->begin() + index, AMTNode(*c));
@@ -102,7 +110,6 @@ void ArrayMappedTrie::insert(const void *value, size_t len) {
 }
 
 void ArrayMappedTrie::add_bitmap() {
-  assert(false);
   map = new Bitmap();
   for (auto node : nodes)
     map->set(node.character, true);

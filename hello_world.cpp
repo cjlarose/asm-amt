@@ -86,5 +86,8 @@ int main() {
   trie.insert("ad", 3);
   trie.contains("ad", 3);
 
+  trie.insert("ar", 3);
+  trie.contains("ar", 3);
+
   return 0;
 }
