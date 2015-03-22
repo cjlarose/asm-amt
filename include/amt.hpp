@@ -4,6 +4,8 @@
 #include <vector>
 #include "bit_map.hpp"
 
+const int MIN_BITMAPPED_SIZE = 5;
+
 class AMTNode;
 
 class ArrayMappedTrie {
@@ -16,6 +18,9 @@ class ArrayMappedTrie {
     ArrayMappedTrie();
     void insert(const void *value, size_t len);
     bool contains(const void *value, size_t len);
+
+  private:
+    void add_bitmap();
 };
 
 class AMTNode {
@@ -89,8 +94,18 @@ void ArrayMappedTrie::insert(const void *value, size_t len) {
 
     node_list->emplace(node_list->begin() + index, AMTNode(*c));
 
+    if (!trie->map && node_list->size() >= MIN_BITMAPPED_SIZE)
+      trie->add_bitmap();
+
     node = &node_list->at(index);
   }
+}
+
+void ArrayMappedTrie::add_bitmap() {
+  assert(false);
+  map = new Bitmap();
+  for (auto node : nodes)
+    map->set(node.character, true);
 }
 
 #endif
