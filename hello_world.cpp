@@ -72,7 +72,7 @@ int main() {
   assert(map.get(255));
 
   printf("Testing amt\n");
-  BitMappedNode trie;
+  ArrayMappedTrie trie;
 
   trie.insert("a", 2);
   assert(trie.contains("a", 2));
@@ -85,6 +85,9 @@ int main() {
 
   trie.insert("ad", 3);
   trie.contains("ad", 3);
+
+  trie.insert("ar", 3);
+  trie.contains("ar", 3);
 
   return 0;
 }

@@ -4,40 +4,54 @@
 #include <vector>
 #include "bit_map.hpp"
 
+const int MIN_BITMAPPED_SIZE = 5;
+
 class AMTNode;
 
-class BitMappedNode {
+class ArrayMappedTrie {
   friend class AMTNode;
 
-  Bitmap map;
+  Bitmap *map;
   std::vector<AMTNode> nodes;
 
   public:
-    BitMappedNode();
+    ArrayMappedTrie(): map(NULL) {};
     void insert(const void *value, size_t len);
     bool contains(const void *value, size_t len);
+
+  private:
+    void add_bitmap();
 };
 
 class AMTNode {
   public:
     uint16_t character;
-    BitMappedNode *sub_trie;
+    ArrayMappedTrie *sub_trie;
     AMTNode(char c): character(c), sub_trie(NULL) {}
     AMTNode *next(char c);
 };
 
-BitMappedNode::BitMappedNode() {
-  nodes.push_back(AMTNode('\0'));
-}
-
 AMTNode *AMTNode::next(char c) {
-  if (!sub_trie || !sub_trie->map.get(c)) return NULL;
-  int index = sub_trie->map.get_offset(c);
-  AMTNode *node = &sub_trie->nodes[index];
-  return node;
+  if (!sub_trie) return NULL;
+
+  int index;
+  if (sub_trie->map) {
+    if (!sub_trie->map->get(c)) return NULL;
+    index = sub_trie->map->get_offset(c);
+    return &sub_trie->nodes[index];
+  } else {
+    for (index = 0; index < sub_trie->nodes.size(); ++index) {
+      AMTNode *node = &sub_trie->nodes[index];
+      if (node->character == c)
+        return node;
+    }
+    return NULL;
+  }
 }
 
-bool BitMappedNode::contains(const void *value, size_t len) {
+bool ArrayMappedTrie::contains(const void *value, size_t len) {
+  if (!nodes.size()) return false;
+
   int i;
   AMTNode *node = &nodes[0];
   unsigned char *c = (unsigned char *) value;
@@ -49,9 +63,13 @@ bool BitMappedNode::contains(const void *value, size_t len) {
   return true;
 }
 
-void BitMappedNode::insert(const void *value, size_t len) {
+void ArrayMappedTrie::insert(const void *value, size_t len) {
   int i;
   unsigned char *c = (unsigned char *) value;
+
+  if (!nodes.size())
+    nodes.push_back(AMTNode('\0'));
+
   AMTNode *node = &nodes[0];
 
   for (i = 0; i < len; ++i, ++c) {
@@ -61,17 +79,40 @@ void BitMappedNode::insert(const void *value, size_t len) {
   }
 
   for (; i < len; ++i, ++c) {
-    if (!node->sub_trie)
-      node->sub_trie = new BitMappedNode();
+    ArrayMappedTrie *trie = node->sub_trie;
+    if (!trie)
+      trie = node->sub_trie = new ArrayMappedTrie();
 
-    node->sub_trie->map.set(*c, true);
+    std::vector<AMTNode> *node_list = &trie->nodes;
 
-    int index = node->sub_trie->map.get_offset(*c);
-    std::vector<AMTNode> *node_list = &node->sub_trie->nodes;
+    int index;
+    if (trie->map) {
+      trie->map->set(*c, true);
+      index = trie->map->get_offset(*c);
+    } else {
+      index = 0;
+      if (!node_list->empty()) {
+        AMTNode *tmp_node = &node_list->at(0);
+        while (index < node_list->size() && tmp_node->character < *c) {
+          ++index;
+          ++tmp_node;
+        }
+      }
+    }
+
     node_list->emplace(node_list->begin() + index, AMTNode(*c));
+
+    if (!trie->map && node_list->size() >= MIN_BITMAPPED_SIZE)
+      trie->add_bitmap();
 
     node = &node_list->at(index);
   }
+}
+
+void ArrayMappedTrie::add_bitmap() {
+  map = new Bitmap();
+  for (auto node : nodes)
+    map->set(node.character, true);
 }
 
 #endif
