@@ -6,14 +6,14 @@
 
 class AMTNode;
 
-class BitMappedNode {
+class ArrayMappedTrie {
   friend class AMTNode;
 
-  Bitmap map;
+  Bitmap *map;
   std::vector<AMTNode> nodes;
 
   public:
-    BitMappedNode();
+    ArrayMappedTrie();
     void insert(const void *value, size_t len);
     bool contains(const void *value, size_t len);
 };
@@ -21,23 +21,23 @@ class BitMappedNode {
 class AMTNode {
   public:
     uint16_t character;
-    BitMappedNode *sub_trie;
+    ArrayMappedTrie *sub_trie;
     AMTNode(char c): character(c), sub_trie(NULL) {}
     AMTNode *next(char c);
 };
 
-BitMappedNode::BitMappedNode() {
+ArrayMappedTrie::ArrayMappedTrie(): map(new Bitmap()) {
   nodes.push_back(AMTNode('\0'));
 }
 
 AMTNode *AMTNode::next(char c) {
-  if (!sub_trie || !sub_trie->map.get(c)) return NULL;
-  int index = sub_trie->map.get_offset(c);
+  if (!sub_trie || !sub_trie->map->get(c)) return NULL;
+  int index = sub_trie->map->get_offset(c);
   AMTNode *node = &sub_trie->nodes[index];
   return node;
 }
 
-bool BitMappedNode::contains(const void *value, size_t len) {
+bool ArrayMappedTrie::contains(const void *value, size_t len) {
   int i;
   AMTNode *node = &nodes[0];
   unsigned char *c = (unsigned char *) value;
@@ -49,7 +49,7 @@ bool BitMappedNode::contains(const void *value, size_t len) {
   return true;
 }
 
-void BitMappedNode::insert(const void *value, size_t len) {
+void ArrayMappedTrie::insert(const void *value, size_t len) {
   int i;
   unsigned char *c = (unsigned char *) value;
   AMTNode *node = &nodes[0];
@@ -62,11 +62,11 @@ void BitMappedNode::insert(const void *value, size_t len) {
 
   for (; i < len; ++i, ++c) {
     if (!node->sub_trie)
-      node->sub_trie = new BitMappedNode();
+      node->sub_trie = new ArrayMappedTrie();
 
-    node->sub_trie->map.set(*c, true);
+    node->sub_trie->map->set(*c, true);
 
-    int index = node->sub_trie->map.get_offset(*c);
+    int index = node->sub_trie->map->get_offset(*c);
     std::vector<AMTNode> *node_list = &node->sub_trie->nodes;
     node_list->emplace(node_list->begin() + index, AMTNode(*c));
 
