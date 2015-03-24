@@ -16,10 +16,12 @@ struct BitmapEntry {
  * Bit twiddling utils
  *****************************************************************************/
 bool bit_get(uint32_t bits, int index) {
+  assert(index < 32);
   return bits & (1 << index);
 }
 
 uint32_t bit_set(uint32_t bits, int index, bool value) {
+  assert(index < 32);
   return value ? bits | (1 << index) : bits & ~(1 << index);
 }
 
