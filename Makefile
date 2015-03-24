@@ -17,9 +17,12 @@ $(BUILD_DIR)/glue.cpp $(BUILD_DIR)/glue.js: amt.idl
 	mkdir -p $(BUILD_DIR)
 	$(IDL_BINDER) $< $(BUILD_DIR)/glue
 
+test.out: test/bit_map.cpp $(INCLUDES)
+	$(CC) -std=c++0x -I./include -o $@ $<
+
 .PHONY: test
-test: ./dist/amt.out.js
-	$(NODE) ./dist/amt.out.js
+test: test.out
+	./test.out
 
 .PHONY: test-native
 test-native: ./dist/amt.out
