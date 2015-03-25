@@ -37,3 +37,11 @@ TEST_CASE ("Bit indicies can be turned on or off", "[bit_utils]") {
   REQUIRE( bit_set(255, 8, false) == 255 );
   REQUIRE( bit_set(255, 31, false) == 255 );
 }
+
+TEST_CASE ("Bits can be counted", "[bit_utils]") {
+  REQUIRE( bit_count(0) == 0 );
+  REQUIRE( bit_count(~0) == 32 );
+  REQUIRE( bit_count(1) == 1 );
+  REQUIRE( bit_count(32) == 1 );
+  REQUIRE( bit_count(255) == 8 );
+}
