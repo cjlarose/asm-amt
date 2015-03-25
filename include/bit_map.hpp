@@ -42,7 +42,7 @@ class Bitmap {
   struct BitmapEntry entries[BITSET_ENTRIES];
 
   public:
-    Bitmap() : entries{{0}} {}
+    Bitmap() : entries{{0, 0}} {}
     bool get(int) const;
     void set(int, bool);
     int get_offset(int);

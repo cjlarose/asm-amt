@@ -34,7 +34,7 @@ class AMTNode {
 AMTNode *AMTNode::next(char c) {
   if (!sub_trie) return NULL;
 
-  int index;
+  unsigned int index;
   if (sub_trie->map) {
     if (!sub_trie->map->get(c)) return NULL;
     index = sub_trie->map->get_offset(c);
@@ -52,7 +52,7 @@ AMTNode *AMTNode::next(char c) {
 bool ArrayMappedTrie::contains(const void *value, size_t len) {
   if (!nodes.size()) return false;
 
-  int i;
+  unsigned int i;
   AMTNode *node = &nodes[0];
   unsigned char *c = (unsigned char *) value;
 
@@ -64,7 +64,7 @@ bool ArrayMappedTrie::contains(const void *value, size_t len) {
 }
 
 void ArrayMappedTrie::insert(const void *value, size_t len) {
-  int i;
+  unsigned int i;
   unsigned char *c = (unsigned char *) value;
 
   if (!nodes.size())
@@ -85,7 +85,7 @@ void ArrayMappedTrie::insert(const void *value, size_t len) {
 
     std::vector<AMTNode> *node_list = &trie->nodes;
 
-    int index;
+    unsigned int index;
     if (trie->map) {
       trie->map->set(*c, true);
       index = trie->map->get_offset(*c);
