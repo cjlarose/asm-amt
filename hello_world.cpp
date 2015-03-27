@@ -6,14 +6,6 @@
 int main() {
   int i;
 
-  printf("Testing bitcount\n");
-
-  assert(bit_count(0) == 0);
-  assert(bit_count(1) == 1);
-  assert(bit_count(8) == 1);
-  assert(bit_count(15) == 4);
-  assert(bit_count(16) == 1);
-
   printf("Testing bitmap get & set\n");
   Bitmap map;
 

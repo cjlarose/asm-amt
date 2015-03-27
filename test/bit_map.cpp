@@ -40,8 +40,11 @@ TEST_CASE ("Bit indicies can be turned on or off", "[bit_utils]") {
 
 TEST_CASE ("Bits can be counted", "[bit_utils]") {
   REQUIRE( bit_count(0) == 0 );
-  REQUIRE( bit_count(~0) == 32 );
   REQUIRE( bit_count(1) == 1 );
+  REQUIRE( bit_count(8) == 1 );
+  REQUIRE( bit_count(15) == 4 );
+  REQUIRE( bit_count(16) == 1 );
   REQUIRE( bit_count(32) == 1 );
   REQUIRE( bit_count(255) == 8 );
+  REQUIRE( bit_count(~0) == 32 );
 }
