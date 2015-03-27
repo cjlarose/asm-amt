@@ -19,7 +19,7 @@ $(BUILD_DIR)/glue.cpp $(BUILD_DIR)/glue.js: amt.idl
 	$(IDL_BINDER) $< $(BUILD_DIR)/glue
 
 test.out: test/bit_map.cpp $(INCLUDES)
-	$(CC) $(CCFLAGS) -o $@ $<
+	$(CC) $(CCFLAGS) -I./test/include -o $@ $<
 
 .PHONY: test
 test: test.out
