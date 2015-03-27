@@ -48,3 +48,70 @@ TEST_CASE ("Bits can be counted", "[bit_utils]") {
   REQUIRE( bit_count(255) == 8 );
   REQUIRE( bit_count(~0) == 32 );
 }
+
+TEST_CASE ("Bitmap starts off empty", "[bitmap]") {
+  Bitmap map;
+  int i;
+
+  // test that everything is initialized to 0
+  for (i = 0; i < 256; ++i)
+    REQUIRE ( !map.get(i) );
+}
+
+TEST_CASE ("Setting single value in bitmap changes only one bit", "[bitmap]") {
+  Bitmap map;
+  int i;
+
+  map.set(217, true);
+  for (i = 0; i < 256; ++i) {
+    REQUIRE ( map.get(i) == (i == 217) );
+  }
+}
+
+TEST_CASE ("Unsetting single value in bitmap changes only one bit", "[bitmap]") {
+  Bitmap map;
+  int i;
+
+  for (i = 0; i < 256; ++i)
+    map.set(i, true);
+
+  map.set(217, false);
+
+  for (i = 0; i < 256; ++i)
+    REQUIRE ( map.get(i) == (i != 217) );
+}
+
+TEST_CASE ("Offset returns number of 1 bits before the given index", "[bitmap]") {
+  Bitmap map;
+
+  map.set(217, true);
+
+  // check offset
+  REQUIRE ( map.get_offset(0) == 0 );
+  REQUIRE ( map.get_offset(217) == 0 );
+  REQUIRE ( map.get_offset(218) == 1 );
+  REQUIRE ( map.get_offset(219) == 1 );
+  REQUIRE ( map.get_offset(253) == 1 );
+  REQUIRE ( map.get_offset(255) == 1 );
+
+  map.set(217, false);
+  REQUIRE ( map.get_offset(217) == 0 );
+}
+
+TEST_CASE ("Many bits can be set", "[bitmap]") {
+  Bitmap map;
+
+  map.set(0, true);
+  map.set(18, true);
+  map.set(43, true);
+  map.set(111, true);
+  map.set(176, true);
+  map.set(255, true);
+
+  REQUIRE ( map.get(0) );
+  REQUIRE ( map.get(18) );
+  REQUIRE ( map.get(43) );
+  REQUIRE ( map.get(111) );
+  REQUIRE ( map.get(176 ));
+  REQUIRE ( map.get(255) );
+}
