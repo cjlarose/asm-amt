@@ -10,24 +10,20 @@ BUILD_DIR=./build
 	mkdir -p ./dist
 	$(EMCC) -std=c++0x -I./include -I$(BUILD_DIR) --post-js $(BUILD_DIR)/glue.js -o $@ $<
 
-./dist/amt.out: hello_world.cpp $(INCLUDES)
-	mkdir -p ./dist
-	$(CC) $(CCFLAGS) $< -o $@
-
 $(BUILD_DIR)/glue.cpp $(BUILD_DIR)/glue.js: amt.idl
 	mkdir -p $(BUILD_DIR)
 	$(IDL_BINDER) $< $(BUILD_DIR)/glue
 
-test.out: test/bit_map.cpp $(INCLUDES)
+test_trie.out: ./test/trie.cpp $(INCLUDES)
+	$(CC) $(CCFLAGS) -I./test/include -o $@ $<
+
+test_bitmap.out: ./test/bit_map.cpp $(INCLUDES)
 	$(CC) $(CCFLAGS) -I./test/include -o $@ $<
 
 .PHONY: test
-test: test.out
-	./test.out
-
-.PHONY: test-native
-test-native: ./dist/amt.out
-	./dist/amt.out
+test: test_trie.out test_bitmap.out
+	./test_trie.out
+	./test_bitmap.out
 
 .PHONY: clean
 clean:
