@@ -1,5 +1,5 @@
-interface BitMappedNode {
-  void BitMappedNode();
+interface ArrayMappedTrie {
+  void ArrayMappedTrie();
   void insert(VoidPtr value, unsigned long len);
   boolean contains(VoidPtr value, unsigned long len);
 };

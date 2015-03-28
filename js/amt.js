@@ -1,6 +1,6 @@
 var Module = require('../dist/amt.out.js');
 
-var trie = new Module.BitMappedNode();
+var trie = new Module.ArrayMappedTrie();
 
 console.log(trie.contains("hello", 6));
 trie.insert("hello", 6);
