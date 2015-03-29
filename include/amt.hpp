@@ -16,8 +16,8 @@ class ArrayMappedTrie {
 
   public:
     ArrayMappedTrie(): map(NULL) {};
-    void insert(const void *value, size_t len);
-    bool contains(const void *value, size_t len);
+    void insert(const char *str);
+    bool contains(const char *str);
 
   private:
     void add_bitmap();
@@ -49,36 +49,33 @@ AMTNode *AMTNode::next(char c) {
   }
 }
 
-bool ArrayMappedTrie::contains(const void *value, size_t len) {
+bool ArrayMappedTrie::contains(const char *str) {
   if (!nodes.size()) return false;
 
-  unsigned int i;
   AMTNode *node = &nodes[0];
-  unsigned char *c = (unsigned char *) value;
 
-  for (i = 0; i < len; ++i, ++c) {
+  for (; *str; ++str) {
     if (!node) return false;
-    node = node->next(*c);
+    node = node->next(*str);
   }
   return true;
 }
 
-void ArrayMappedTrie::insert(const void *value, size_t len) {
-  unsigned int i;
-  unsigned char *c = (unsigned char *) value;
+void ArrayMappedTrie::insert(const char *str) {
+  char *c = (char *) str;
 
   if (!nodes.size())
     nodes.push_back(AMTNode('\0'));
 
   AMTNode *node = &nodes[0];
 
-  for (i = 0; i < len; ++i, ++c) {
+  for (; *c; ++c) {
     AMTNode *tmp = node->next(*c);
     if (!tmp) break;
     node = tmp;
   }
 
-  for (; i < len; ++i, ++c) {
+  for (; *c; ++c) {
     ArrayMappedTrie *trie = node->sub_trie;
     if (!trie)
       trie = node->sub_trie = new ArrayMappedTrie();

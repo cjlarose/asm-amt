@@ -5,28 +5,28 @@
 TEST_CASE ("Strings with different prefixes can be inserted", "[trie]") {
   ArrayMappedTrie trie;
 
-  trie.insert("a", 2);
-  REQUIRE( trie.contains("a", 2) );
+  trie.insert("a");
+  REQUIRE( trie.contains("a") );
 
-  trie.insert("q", 2);
-  REQUIRE( trie.contains("q", 2) );
+  trie.insert("q");
+  REQUIRE( trie.contains("q") );
 
-  trie.insert("r", 2);
-  REQUIRE( trie.contains("r", 2) );
+  trie.insert("r");
+  REQUIRE( trie.contains("r") );
 }
 
 TEST_CASE ("Strings with common prefixes can be inserted", "[trie]") {
   ArrayMappedTrie trie;
 
-  trie.insert("ag", 3);
-  REQUIRE ( trie.contains("ag", 3) );
+  trie.insert("ag");
+  REQUIRE ( trie.contains("ag") );
 
-  trie.insert("ab", 3);
-  REQUIRE ( trie.contains("ab", 3) );
+  trie.insert("ab");
+  REQUIRE ( trie.contains("ab") );
 
-  trie.insert("ad", 3);
-  REQUIRE ( trie.contains("ad", 3) );
+  trie.insert("ad");
+  REQUIRE ( trie.contains("ad") );
 
-  trie.insert("ar", 3);
-  REQUIRE ( trie.contains("ar", 3) );
+  trie.insert("ar");
+  REQUIRE ( trie.contains("ar") );
 }

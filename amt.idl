@@ -1,5 +1,5 @@
 interface ArrayMappedTrie {
   void ArrayMappedTrie();
-  void insert(VoidPtr value, unsigned long len);
-  boolean contains(VoidPtr value, unsigned long len);
+  void insert(DOMString str);
+  boolean contains(DOMString str);
 };
