@@ -46,6 +46,8 @@ AMTNode *AMTNode::next(char c) {
       AMTNode *node = &sub_trie->nodes[index];
       if (node->character == c)
         return node;
+      if (node->character > c)
+        return NULL;
     }
     return NULL;
   }
