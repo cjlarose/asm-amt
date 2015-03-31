@@ -30,3 +30,31 @@ TEST_CASE ("Strings with common prefixes can be inserted", "[trie]") {
   trie.insert("ar");
   REQUIRE ( trie.contains("ar") );
 }
+
+TEST_CASE ("Size begins at zero", "[trie]") {
+  ArrayMappedTrie trie;
+
+  REQUIRE ( trie.size() == 0 );
+}
+
+TEST_CASE ("Size increases upon insertion", "[trie]") {
+  ArrayMappedTrie trie;
+
+  trie.insert("a");
+  REQUIRE ( trie.size() == 1 );
+
+  trie.insert("b");
+  REQUIRE ( trie.size() == 2 );
+
+  trie.insert("c");
+  REQUIRE ( trie.size() == 3 );
+
+  trie.insert("ab");
+  REQUIRE ( trie.size() == 4 );
+
+  trie.insert("ad");
+  REQUIRE ( trie.size() == 5 );
+
+  trie.insert("add");
+  REQUIRE ( trie.size() == 6 );
+}
