@@ -58,7 +58,7 @@ bool ArrayMappedTrie::contains(const char *str) {
     if (!node) return false;
     node = node->next(*str);
   }
-  return true;
+  return node->next('\0') != NULL;
 }
 
 void ArrayMappedTrie::insert(const char *str) {
@@ -75,7 +75,10 @@ void ArrayMappedTrie::insert(const char *str) {
     node = tmp;
   }
 
-  for (; *c; ++c) {
+  int size = strlen(str) + 1;
+  int i = 0;
+
+  for (i = 0; i < size; ++i, ++c) {
     ArrayMappedTrie *trie = node->sub_trie;
     if (!trie)
       trie = node->sub_trie = new ArrayMappedTrie();
