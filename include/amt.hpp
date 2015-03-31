@@ -94,10 +94,10 @@ void ArrayMappedTrie::insert(const char *str) {
     } else {
       index = 0;
       if (!node_list->empty()) {
-        AMTNode *tmp_node = &node_list->at(0);
-        while (index < node_list->size() && tmp_node->character < *c) {
-          ++index;
-          ++tmp_node;
+        for (auto tmp_node : *node_list) {
+          if (tmp_node.character > *c)
+            break;
+          index++;
         }
       }
     }
