@@ -18,6 +18,7 @@ class ArrayMappedTrie {
     ArrayMappedTrie(): map(NULL) {};
     void insert(const char *str);
     bool contains(const char *str);
+    size_t size();
 
   private:
     void add_bitmap();
@@ -29,6 +30,7 @@ class AMTNode {
     ArrayMappedTrie *sub_trie;
     AMTNode(char c): character(c), sub_trie(NULL) {}
     AMTNode *next(char c);
+    size_t sub_trie_size();
 };
 
 AMTNode *AMTNode::next(char c) {
@@ -107,6 +109,27 @@ void ArrayMappedTrie::insert(const char *str) {
 
     node = &node_list->at(index);
   }
+}
+
+size_t ArrayMappedTrie::size() {
+  if (nodes.empty()) {
+    return 0;
+  } else {
+    AMTNode root = nodes[0];
+    assert(root.sub_trie);
+    return root.sub_trie_size();
+  }
+}
+
+size_t AMTNode::sub_trie_size() {
+  assert(sub_trie);
+  size_t total = 0;
+  for (auto node : sub_trie->nodes)
+    if (node.character == '\0')
+      total++;
+    else if (node.sub_trie)
+      total += node.sub_trie_size();
+  return total;
 }
 
 void ArrayMappedTrie::add_bitmap() {
