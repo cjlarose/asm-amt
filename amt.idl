@@ -2,4 +2,5 @@ interface ArrayMappedTrie {
   void ArrayMappedTrie();
   void insert(DOMString str);
   boolean contains(DOMString str);
+  unsigned long size();
 };
