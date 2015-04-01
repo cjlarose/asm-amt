@@ -20,11 +20,18 @@ test_trie.out: ./test/trie.cpp $(INCLUDES)
 test_bitmap.out: ./test/bit_map.cpp $(INCLUDES)
 	$(CC) $(CCFLAGS) -I./test/include -o $@ $<
 
-.PHONY: test
-test: test_trie.out test_bitmap.out
+.PHONY: test-js
+test-js: ./dist/amt.out.js
+	./node_modules/.bin/mocha test-js/*.js
+
+.PHONY: test-native
+test-native: test_trie.out test_bitmap.out
 	./test_trie.out
 	./test_bitmap.out
 
+.PHONY: test
+test: test-native test-js
+
 .PHONY: clean
 clean:
-	rm -rf ./dist $(BUILD_DIR)
+	rm -rf ./dist $(BUILD_DIR) *.out
