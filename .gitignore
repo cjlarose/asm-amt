@@ -1,4 +1,4 @@
 dist
 build
 WebIDLGrammar.pkl
-parser.out
+*.out
