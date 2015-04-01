@@ -2,3 +2,4 @@ dist
 build
 WebIDLGrammar.pkl
 *.out
+node_modules
