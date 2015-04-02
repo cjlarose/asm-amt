@@ -3,7 +3,7 @@
 #include "amt.hpp"
 
 TEST_CASE ("Strings with different prefixes can be inserted", "[trie]") {
-  ArrayMappedTrie trie;
+  Trie trie;
 
   trie.insert("a");
   REQUIRE( trie.contains("a") );
@@ -16,7 +16,7 @@ TEST_CASE ("Strings with different prefixes can be inserted", "[trie]") {
 }
 
 TEST_CASE ("Strings with common prefixes can be inserted", "[trie]") {
-  ArrayMappedTrie trie;
+  Trie trie;
 
   trie.insert("ag");
   REQUIRE ( trie.contains("ag") );
@@ -32,13 +32,13 @@ TEST_CASE ("Strings with common prefixes can be inserted", "[trie]") {
 }
 
 TEST_CASE ("Size begins at zero", "[trie]") {
-  ArrayMappedTrie trie;
+  Trie trie;
 
   REQUIRE ( trie.size() == 0 );
 }
 
 TEST_CASE ("Size increases upon insertion", "[trie]") {
-  ArrayMappedTrie trie;
+  Trie trie;
 
   trie.insert("a");
   REQUIRE ( trie.size() == 1 );
