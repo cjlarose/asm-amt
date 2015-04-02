@@ -1,6 +1,6 @@
 var Module = require('../dist/amt.out.js');
 
-var trie = new Module.ArrayMappedTrie();
+var trie = new Module.Trie();
 
 console.log(trie.contains("hello", 6));
 trie.insert("hello", 6);
