@@ -29,6 +29,9 @@ TEST_CASE ("Strings with common prefixes can be inserted", "[trie]") {
 
   trie.insert("ar");
   REQUIRE ( trie.contains("ar") );
+
+  trie.insert("aa");
+  REQUIRE ( trie.contains("aa") );
 }
 
 TEST_CASE ("Size begins at zero", "[trie]") {
