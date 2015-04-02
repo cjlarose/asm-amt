@@ -86,10 +86,9 @@ bool Trie::contains(const char *str) {
 Trie::AMTNode *Trie::CompactTrie::insert_node(char c) {
   unsigned int index = 0;
   size_t sz = nodes->size();
-  for (; index < sz; ++index) {
-    if (nodes->at(index).character > c)
-      break;
-  }
+
+  while (index < sz && nodes->at(index).character < c)
+    index++;
 
   nodes->emplace(nodes->begin() + index, AMTNode(c));
   return &nodes->at(index);
