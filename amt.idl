@@ -1,5 +1,5 @@
-interface ArrayMappedTrie {
-  void ArrayMappedTrie();
+interface Trie {
+  void Trie();
   void insert(DOMString str);
   boolean contains(DOMString str);
   unsigned long size();
