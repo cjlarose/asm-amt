@@ -6,13 +6,21 @@
 
 const int MIN_BITMAPPED_SIZE = 5;
 
-class AMTNode;
-
 class ArrayMappedTrie {
-  friend class AMTNode;
 
-  Bitmap *map;
-  std::vector<AMTNode> nodes;
+  private:
+    class AMTNode {
+      public:
+        uint16_t character;
+        ArrayMappedTrie *sub_trie;
+        AMTNode(char c): character(c), sub_trie(NULL) {}
+        AMTNode *next(char c);
+        size_t sub_trie_size();
+    };
+
+    Bitmap *map;
+    std::vector<ArrayMappedTrie::AMTNode> nodes;
+    void add_bitmap();
 
   public:
     ArrayMappedTrie(): map(NULL) {};
@@ -20,20 +28,9 @@ class ArrayMappedTrie {
     bool contains(const char *str);
     size_t size();
 
-  private:
-    void add_bitmap();
 };
 
-class AMTNode {
-  public:
-    uint16_t character;
-    ArrayMappedTrie *sub_trie;
-    AMTNode(char c): character(c), sub_trie(NULL) {}
-    AMTNode *next(char c);
-    size_t sub_trie_size();
-};
-
-AMTNode *AMTNode::next(char c) {
+ArrayMappedTrie::AMTNode *ArrayMappedTrie::AMTNode::next(char c) {
   if (!sub_trie) return NULL;
 
   unsigned int index;
@@ -123,7 +120,7 @@ size_t ArrayMappedTrie::size() {
   }
 }
 
-size_t AMTNode::sub_trie_size() {
+size_t ArrayMappedTrie::AMTNode::sub_trie_size() {
   assert(sub_trie);
   size_t total = 0;
   for (auto node : sub_trie->nodes)
