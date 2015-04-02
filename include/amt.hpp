@@ -12,8 +12,8 @@ class ArrayMappedTrie {
     class AMTNode {
       public:
         uint16_t character;
-        ArrayMappedTrie *sub_trie;
-        AMTNode(char c): character(c), sub_trie(NULL) {}
+        std::unique_ptr<ArrayMappedTrie> sub_trie;
+        AMTNode(char c): character(c), sub_trie(nullptr) {}
         AMTNode *next(char c);
         size_t sub_trie_size();
     };
@@ -80,31 +80,28 @@ void ArrayMappedTrie::insert(const char *str) {
   int i = 0;
 
   for (i = 0; i < size; ++i, ++c) {
-    ArrayMappedTrie *trie = node->sub_trie;
-    if (!trie)
-      trie = node->sub_trie = new ArrayMappedTrie();
+    if (!node->sub_trie) {
+      node->sub_trie.reset(new ArrayMappedTrie());
+    }
 
-    std::vector<AMTNode> *node_list = &trie->nodes;
+    std::vector<AMTNode> *node_list = &node->sub_trie->nodes;
 
     unsigned int index;
-    if (trie->map) {
-      trie->map->set(*c, true);
-      index = trie->map->get_offset(*c);
+    if (node->sub_trie->map) {
+      node->sub_trie->map->set(*c, true);
+      index = node->sub_trie->map->get_offset(*c);
     } else {
-      index = 0;
-      if (!node_list->empty()) {
-        for (auto tmp_node : *node_list) {
-          if (tmp_node.character > *c)
-            break;
-          index++;
-        }
+      size_t sz = node_list->size();
+      for (index = 0; index < sz; ++index) {
+        if (node_list->at(index).character > *c)
+          break;
       }
     }
 
     node_list->emplace(node_list->begin() + index, AMTNode(*c));
 
-    if (!trie->map && node_list->size() >= MIN_BITMAPPED_SIZE)
-      trie->add_bitmap();
+    if (!node->sub_trie->map && node_list->size() >= MIN_BITMAPPED_SIZE)
+      node->sub_trie->add_bitmap();
 
     node = &node_list->at(index);
   }
@@ -114,27 +111,30 @@ size_t ArrayMappedTrie::size() {
   if (nodes.empty()) {
     return 0;
   } else {
-    AMTNode root = nodes[0];
-    assert(root.sub_trie);
-    return root.sub_trie_size();
+    AMTNode *root = &nodes[0];
+    assert(root->sub_trie);
+    return root->sub_trie_size();
   }
 }
 
 size_t ArrayMappedTrie::AMTNode::sub_trie_size() {
   assert(sub_trie);
-  size_t total = 0;
-  for (auto node : sub_trie->nodes)
-    if (node.character == '\0')
+  size_t total = 0, sz = sub_trie->nodes.size();
+  for (unsigned int i = 0; i < sz; ++i) {
+    auto node = &sub_trie->nodes.at(i);
+    if (node->character == '\0')
       total++;
-    else if (node.sub_trie)
-      total += node.sub_trie_size();
+    else if (node->sub_trie)
+      total += node->sub_trie_size();
+  }
   return total;
 }
 
 void ArrayMappedTrie::add_bitmap() {
   map = new Bitmap();
-  for (auto node : nodes)
-    map->set(node.character, true);
+  size_t sz = nodes.size();
+  for (unsigned int i = 0; i < sz; ++i)
+    map->set(nodes.at(i).character, true);
 }
 
 #endif
