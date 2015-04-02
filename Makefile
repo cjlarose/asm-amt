@@ -15,10 +15,10 @@ $(BUILD_DIR)/glue.cpp $(BUILD_DIR)/glue.js: amt.idl
 	$(IDL_BINDER) $< $(BUILD_DIR)/glue
 
 test_trie.out: ./test/trie.cpp $(INCLUDES)
-	$(CC) $(CCFLAGS) -I./test/include -o $@ $<
+	$(CC) $(CCFLAGS) -g -I./test/include -o $@ $<
 
 test_bitmap.out: ./test/bit_map.cpp $(INCLUDES)
-	$(CC) $(CCFLAGS) -I./test/include -o $@ $<
+	$(CC) $(CCFLAGS) -g -I./test/include -o $@ $<
 
 .PHONY: test-js
 test-js: ./dist/amt.out.js
