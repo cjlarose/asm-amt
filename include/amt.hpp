@@ -121,13 +121,10 @@ void Trie::insert(const char *str) {
     if (!node->sub_trie)
       node->sub_trie.reset(new CompactTrie());
 
-    std::vector<AMTNode> *node_list = node->sub_trie->nodes.get();
-    auto tmp_node = node->sub_trie->insert_node(*c);
-
-    if (node_list->size() == MIN_BITMAPPED_SIZE)
+    if (node->sub_trie->nodes->size() == MIN_BITMAPPED_SIZE - 1)
       node->sub_trie.reset(add_bitmap(node->sub_trie.get()));
 
-    node = tmp_node;
+    node = node->sub_trie->insert_node(*c);
   }
 }
 
