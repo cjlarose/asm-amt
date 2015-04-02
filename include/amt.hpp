@@ -1,6 +1,6 @@
 #ifndef AMT_H
 #define AMT_H
- 
+
 #include <vector>
 #include "bit_map.hpp"
 
@@ -127,7 +127,7 @@ void Trie::insert(const char *str) {
 
     if (node_list->size() == MIN_BITMAPPED_SIZE)
       node->sub_trie.reset(add_bitmap(node->sub_trie.get()));
-    
+
     node = tmp_node;
   }
 }
