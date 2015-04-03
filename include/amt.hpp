@@ -51,11 +51,10 @@ class Trie {
 };
 
 Trie::AMTNode *Trie::CompactTrie::next(char c) {
-  for (unsigned int index = 0; index < nodes->size(); ++index) {
-    AMTNode *node = &nodes->at(index);
-    if (node->character == c)
-      return node;
-    if (node->character > c)
+  for (auto it = nodes->begin(); it < nodes->end(); ++it) {
+    if (it->character == c)
+      return &(*it);
+    if (it->character > c)
       return NULL;
   }
   return NULL;
