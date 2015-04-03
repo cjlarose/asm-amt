@@ -132,7 +132,6 @@ size_t Trie::size() {
   if (root.nodes->empty()) {
     return 0;
   } else {
-    assert(root.nodes->at(0).sub_trie);
     return root.nodes->at(0).sub_trie_size();
   }
 }
