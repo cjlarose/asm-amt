@@ -84,14 +84,13 @@ bool Trie::contains(const char *str) {
 }
 
 Trie::AMTNode *Trie::CompactTrie::insert_node(char c) {
-  unsigned int index = 0;
-  size_t sz = nodes->size();
+  auto it = nodes->begin(), end = nodes->end();
 
-  while (index < sz && nodes->at(index).character < c)
-    index++;
+  while (it != end && it->character < c)
+    it++;
 
-  nodes->emplace(nodes->begin() + index, AMTNode(c));
-  return &nodes->at(index);
+  it = nodes->emplace(it, AMTNode(c));
+  return &(*it);
 }
 
 Trie::AMTNode *Trie::ArrayMappedTrie::insert_node(char c) {
